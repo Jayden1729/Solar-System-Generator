@@ -140,7 +140,6 @@ const getMode = (array) => {
   return mode;
 };
 
-
 /**
  * Takes the star data aquired from NASA Exoplanet Database and simplifies it,
  *   so that each star only has one entry.
@@ -151,8 +150,8 @@ const getMode = (array) => {
  *   has one entry. The median value from all entries is taken for numerical
  *   attribute values, and the mode is taken for string attribute values.
  */
-const simplifyStarData = (starData) => {
-  const starLists = getObjectLists(starData, "hostname");
+const simplifyStarData = (starData, identifier) => {
+  const starLists = getObjectLists(starData, identifier);
   const reducedData = [];
 
   for (const star of starLists) {
@@ -164,11 +163,7 @@ const simplifyStarData = (starData) => {
       star[key] = filteredArray;
       const listType = typeof filteredArray[0];
       if (listType == "number") {
-        let yes = star[key];
-        let hey = getMedian(yes);
-        console.log(hey);
         star[key] = getMedian(star[key]);
-        console.log(key, star[key]);
       } else if (listType == "string") {
         star[key] = getMode(star[key]);
       } else {
@@ -180,30 +175,59 @@ const simplifyStarData = (starData) => {
   return reducedData;
 };
 
+
+/**
+ * Gets star and planet data for a given system.
+ *
+ * @async
+ * @param {string} systemName - The name of the system.
+ * @returns {Array.Array.<Object>} - An array of two arrays. The first array
+ *   contains the data for all star objects. The second array contains the data
+ *   for all planet objects in the system.
+ */
 const fetchSystemData = async (systemName) => {
   const planetDataCols =
-    "pl_name,hostname,pl_orbper,pl_orbsmax,pl_rade,pl_masse,pl_msinie,pl_bmasse,pl_dens,pl_orbeccen,pl_orbincl,ra,dec,cb_flab,sy_mnum";
+    "pl_name,hostname,pl_orbper,pl_orbsmax,pl_rade,pl_masse,pl_msinie,pl_bmasse,pl_dens,pl_orbeccen,pl_orbincl,ra,dec,cb_flag,sy_mnum";
 
   const starDataCols = "sy_name,hostname,st_rad,st_mass,st_dens,ra,dec,sy_dist";
 
   //Fetch data for stars in system
-  const starData = await fetchNASAData(
+  const rawStarData = await fetchNASAData(
     starDataCols,
     "stellarhosts",
     `sy_name='${systemName}'`
   );
 
+  //Simplify star data
+  let starData;
   try {
-    const condensedData = simplifyStarData(starData);
-    console.log(condensedData);
+    starData = simplifyStarData(rawStarData, "hostname");
   } catch (error) {
-    console.log(error);
+    return error;
   }
+
+  //Get planet data for all stars in system
+  let planetData = [];
+  for (const star of starData) {
+    const rawPlanetData = await fetchNASAData(
+      planetDataCols,
+      "ps",
+      `hostname='${star["hostname"]}'`
+    );
+    try {
+      const reducedPlanetData = simplifyStarData(rawPlanetData, "pl_name")
+      planetData = planetData.concat(reducedPlanetData);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  
+  return [starData, planetData]
 };
 
 function main() {
-  //let systemName = "55 Cnc";
-  let systemName = "eps Ind";
+  let systemName = "55 Cnc";
+  //let systemName = "eps Ind";
 
   fetchSystemData(systemName);
 }
