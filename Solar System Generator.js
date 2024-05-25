@@ -111,7 +111,6 @@ const getMedian = (array) => {
   return median;
 };
 
-
 /**
  * Returns the mode of an array.
  *
@@ -141,6 +140,46 @@ const getMode = (array) => {
   return mode;
 };
 
+
+/**
+ * Takes the star data aquired from NASA Exoplanet Database and simplifies it,
+ *   so that each star only has one entry.
+ *
+ * @param {Array.<Object>} starData - An array of stars aquired from NASA
+ *   Exoplanet Database.
+ * @returns {Array.<Object>} - An array of stars, reduced so that each star only
+ *   has one entry. The median value from all entries is taken for numerical
+ *   attribute values, and the mode is taken for string attribute values.
+ */
+const simplifyStarData = (starData) => {
+  const starLists = getObjectLists(starData, "hostname");
+  const reducedData = [];
+
+  for (const star of starLists) {
+    const keys = Object.keys(star);
+    for (const key of keys) {
+      const filteredArray = star[key].filter((element) => {
+        return element != null;
+      });
+      star[key] = filteredArray;
+      const listType = typeof filteredArray[0];
+      if (listType == "number") {
+        let yes = star[key];
+        let hey = getMedian(yes);
+        console.log(hey);
+        star[key] = getMedian(star[key]);
+        console.log(key, star[key]);
+      } else if (listType == "string") {
+        star[key] = getMode(star[key]);
+      } else {
+        star[key] = null;
+      }
+    }
+    reducedData.push(star);
+  }
+  return reducedData;
+};
+
 const fetchSystemData = async (systemName) => {
   const planetDataCols =
     "pl_name,hostname,pl_orbper,pl_orbsmax,pl_rade,pl_masse,pl_msinie,pl_bmasse,pl_dens,pl_orbeccen,pl_orbincl,ra,dec,cb_flab,sy_mnum";
@@ -155,7 +194,7 @@ const fetchSystemData = async (systemName) => {
   );
 
   try {
-    const condensedData = getObjectLists(starData, "hostname");
+    const condensedData = simplifyStarData(starData);
     console.log(condensedData);
   } catch (error) {
     console.log(error);
@@ -163,11 +202,10 @@ const fetchSystemData = async (systemName) => {
 };
 
 function main() {
-  let systemName = "55 Cnc";
+  //let systemName = "55 Cnc";
+  let systemName = "eps Ind";
 
   fetchSystemData(systemName);
-
-  console.log(getMode(["a", "a", "a", "v", "f", "j"]));
 }
 
 main();
