@@ -5,7 +5,7 @@
  * @param {string} dataCols A string of database columns to query, separated by commas.
  * @param {string} dataTable The name of the data table to query.
  * @param {string} condition Return data only for entries where this condition is fulfilled.
- * @returns {json} Returns the specified database columns from the specified data table for entries that fulfil the specified condition.
+ * @returns {json} Returns the specified database columns from the specified data table for entries that fulfil the specified condition, or returns an error.
  *
  * @example
  * const fetchNasaData("pl_name", "pscomppars", "hostname='55 Cnc'"); // Returns the names of planets with hostname='55 Cnc' from table pscomppars.
@@ -25,13 +25,15 @@ const fetchNASAData = async (dataCols, dataTable, condition) => {
       },
       (networkError) => {
         console.log(networkError.message);
+        return error;
       }
     )
     .then((jsonResponse) => {
       return jsonResponse;
     })
-    .catch((errror) => {
+    .catch((error) => {
       console.log(error);
+      return error;
     });
 
   return jsonData;
@@ -41,7 +43,7 @@ const fetchSystemData = async (systemName) => {
   const planetDataCols =
     "pl_name,hostname,pl_orbper,pl_orbsmax,pl_rade,pl_masse,pl_msinie,pl_bmasse,pl_dens,pl_orbeccen,pl_orbincl,ra,dec,cb_flab,sy_mnum";
 
-  const starDataCols = "sy_name,hostname,st_rad,st_mass,st_dens,ra,dec,sy_dist";
+  const starDataCols = "y_name,hostname,st_rad,st_mass,st_dens,ra,dec,sy_dist";
 
   //Fetch data for stars in system
   const starData = await fetchNASAData(
@@ -49,6 +51,7 @@ const fetchSystemData = async (systemName) => {
     "stellarhosts",
     `sy_name='${systemName}'`
   );
+
   console.log(starData);
 };
 
