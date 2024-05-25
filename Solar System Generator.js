@@ -63,7 +63,7 @@ const getObjectLists = (objectData, identifier) => {
   for (const object of objectData) {
     const objectName = object[identifier];
     const keys = Object.keys(object);
-    isNew = true;
+    let isNew = true;
 
     storedObjectNames.forEach((element) => {
       if (objectName === element) {
@@ -95,20 +95,50 @@ const getObjectLists = (objectData, identifier) => {
   return dataLists;
 };
 
-
 /**
  * Returns the median value of an array.
  *
- * @param {Array} array - An array of numbers.
+ * @param {Array.<number>} array - An array of numbers.
  * @returns {number} - The median value.
  */
 const getMedian = (array) => {
   array.sort((a, b) => {
     return a - b;
   });
-  centreIndex = (array.length - 1) / 2;
-  median = (array[Math.floor(centreIndex)] + array[Math.ceil(centreIndex)]) / 2;
+  const centreIndex = (array.length - 1) / 2;
+  const median =
+    (array[Math.floor(centreIndex)] + array[Math.ceil(centreIndex)]) / 2;
   return median;
+};
+
+
+/**
+ * Returns the mode of an array.
+ *
+ * @param {Array} array - An array.
+ * @returns {*} - The mode of the array.
+ */
+const getMode = (array) => {
+  let counts = {};
+  for (const element of array) {
+    if (counts[element] === undefined) {
+      counts[element] = 1;
+    } else {
+      counts[element] += 1;
+    }
+  }
+
+  let highestCount = 0;
+  let mode;
+  const keys = Object.keys(counts);
+  for (const key of keys) {
+    const keyValue = counts[key];
+    if (keyValue > highestCount) {
+      highestCount = keyValue;
+      mode = key;
+    }
+  }
+  return mode;
 };
 
 const fetchSystemData = async (systemName) => {
@@ -136,6 +166,8 @@ function main() {
   let systemName = "55 Cnc";
 
   fetchSystemData(systemName);
+
+  console.log(getMode(["a", "a", "a", "v", "f", "j"]));
 }
 
 main();
