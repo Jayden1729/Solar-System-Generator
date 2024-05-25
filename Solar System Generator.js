@@ -2,13 +2,13 @@
  * Fetches data from the NASA Exoplanet Database.
  *
  * @async
- * @param {string} dataCols A string of database columns to query, separated by 
+ * @param {string} dataCols A string of database columns to query, separated by
  *   commas.
  * @param {string} dataTable The name of the data table to query.
- * @param {string} condition Return data only for entries where this condition 
+ * @param {string} condition Return data only for entries where this condition
  *   is fulfilled.
- * @returns {json} Returns the specified database columns from the specified 
- *   data table for entries that fulfil the specified condition, or returns an 
+ * @returns {json} Returns the specified database columns from the specified
+ *   data table for entries that fulfil the specified condition, or returns an
  *   error.
  *
  * @example
@@ -44,11 +44,10 @@ const fetchNASAData = async (dataCols, dataTable, condition) => {
   return jsonData;
 };
 
-
 /**
- * Takes an array of objects, where many objects share the same identifier, and 
- *   returns a list of objects with unique identifiers, where each attribute 
- *   stores an array of all the attributes of that type of objects with 
+ * Takes an array of objects, where many objects share the same identifier, and
+ *   returns a list of objects with unique identifiers, where each attribute
+ *   stores an array of all the attributes of that type of objects with
  *   corresponding identifiers in the original array.
  *
  * @param {Array.<Object>} objectData - An array of objects.
@@ -94,6 +93,22 @@ const getObjectLists = (objectData, identifier) => {
     }
   }
   return dataLists;
+};
+
+
+/**
+ * Returns the median value of an array.
+ *
+ * @param {Array} array - An array of numbers.
+ * @returns {number} - The median value.
+ */
+const getMedian = (array) => {
+  array.sort((a, b) => {
+    return a - b;
+  });
+  centreIndex = (array.length - 1) / 2;
+  median = (array[Math.floor(centreIndex)] + array[Math.ceil(centreIndex)]) / 2;
+  return median;
 };
 
 const fetchSystemData = async (systemName) => {
