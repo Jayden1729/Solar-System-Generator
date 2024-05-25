@@ -141,40 +141,40 @@ const getMode = (array) => {
 };
 
 /**
- * Takes the star data aquired from NASA Exoplanet Database and simplifies it,
- *   so that each star only has one entry.
+ * Takes data aquired from NASA Exoplanet Database and simplifies it, so that 
+ *   each object only has one entry.
  *
- * @param {Array.<Object>} starData - An array of stars aquired from NASA
- *   Exoplanet Database.
- * @returns {Array.<Object>} - An array of stars, reduced so that each star only
- *   has one entry. The median value from all entries is taken for numerical
- *   attribute values, and the mode is taken for string attribute values.
+ * @param {Array.<Object>} astroData - An array of astronomical objects aquired 
+ *   from the NASA Exoplanet Database.
+ * @returns {Array.<Object>} - An array of astronomical objects, reduced so that
+ *   each object only has one entry. The median value from all entries is taken 
+ *   for numerical attribute values, and the mode is taken for string attribute 
+ *   values.
  */
-const simplifyStarData = (starData, identifier) => {
-  const starLists = getObjectLists(starData, identifier);
+const simplifyAstroData = (astroData, identifier) => {
+  const astroLists = getObjectLists(astroData, identifier);
   const reducedData = [];
 
-  for (const star of starLists) {
-    const keys = Object.keys(star);
+  for (const astro of astroLists) {
+    const keys = Object.keys(astro);
     for (const key of keys) {
-      const filteredArray = star[key].filter((element) => {
+      const filteredArray = astro[key].filter((element) => {
         return element != null;
       });
-      star[key] = filteredArray;
+      astro[key] = filteredArray;
       const listType = typeof filteredArray[0];
       if (listType == "number") {
-        star[key] = getMedian(star[key]);
+        astro[key] = getMedian(astro[key]);
       } else if (listType == "string") {
-        star[key] = getMode(star[key]);
+        astro[key] = getMode(astro[key]);
       } else {
-        star[key] = null;
+        astro[key] = null;
       }
     }
-    reducedData.push(star);
+    reducedData.push(astro);
   }
   return reducedData;
 };
-
 
 /**
  * Gets star and planet data for a given system.
@@ -201,7 +201,7 @@ const fetchSystemData = async (systemName) => {
   //Simplify star data
   let starData;
   try {
-    starData = simplifyStarData(rawStarData, "hostname");
+    starData = simplifyAstroData(rawStarData, "hostname");
   } catch (error) {
     return error;
   }
@@ -215,21 +215,22 @@ const fetchSystemData = async (systemName) => {
       `hostname='${star["hostname"]}'`
     );
     try {
-      const reducedPlanetData = simplifyStarData(rawPlanetData, "pl_name")
+      const reducedPlanetData = simplifyAstroData(rawPlanetData, "pl_name");
       planetData = planetData.concat(reducedPlanetData);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
-  
+
   return [starData, planetData]
 };
 
-function main() {
+const main = async () => {
   let systemName = "55 Cnc";
   //let systemName = "eps Ind";
 
-  fetchSystemData(systemName);
+  const systemData = await fetchSystemData(systemName);
+  console.log(systemData);
 }
 
 main();
