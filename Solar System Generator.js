@@ -187,7 +187,7 @@ const simplifyAstroData = (astroData, identifier) => {
  */
 const fetchSystemData = async (systemName) => {
   const planetDataCols =
-    "pl_name,hostname,pl_orbper,pl_orbsmax,pl_rade,pl_masse,pl_msinie,pl_bmasse,pl_dens,pl_orbeccen,pl_orbincl,ra,dec,cb_flag,sy_mnum";
+    "pl_name,hostname,pl_orbper,pl_orbsmax,pl_rade,pl_bmasse,pl_dens,pl_orbeccen,pl_orbincl,ra,dec,cb_flag,sy_mnum";
 
   const starDataCols = "sy_name,hostname,st_rad,st_mass,st_dens,ra,dec,sy_dist";
 
