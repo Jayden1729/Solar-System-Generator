@@ -187,7 +187,7 @@ const simplifyAstroData = (astroData, identifier) => {
  */
 const fetchSystemData = async (systemName) => {
   const planetDataCols =
-    "pl_name,hostname,pl_orbper,pl_orbsmax,pl_rade,pl_bmasse,pl_dens,pl_orbeccen,pl_orbincl,ra,dec,cb_flag,sy_mnum";
+    "pl_name,hostname,pl_orbper,pl_orbsmax,pl_radj,pl_bmassj,pl_dens,pl_orbeccen,pl_orbincl,ra,dec,cb_flag,sy_mnum";
 
   const starDataCols = "sy_name,hostname,st_rad,st_mass,st_dens,ra,dec,sy_dist";
 
@@ -211,7 +211,7 @@ const fetchSystemData = async (systemName) => {
   for (const star of starData) {
     const rawPlanetData = await fetchNASAData(
       planetDataCols,
-      "ps",
+      "pscomppars",
       `hostname='${star["hostname"]}'`
     );
     try {
@@ -227,7 +227,7 @@ const fetchSystemData = async (systemName) => {
 
 const main = async () => {
   let systemName = "55 Cnc";
-  //let systemName = "eps Ind";
+  systemName = "Kepler-47";
 
   const systemData = await fetchSystemData(systemName);
   console.log(systemData);
