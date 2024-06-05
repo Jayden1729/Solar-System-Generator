@@ -229,21 +229,43 @@ const fetchSystemData = async (systemName) => {
   return [starData, planetData];
 };
 
-const main = async () => {
-  let systemName = "55 Cnc";
-  systemName = "Kepler-47";
-  systemName = "Kepler-97";
 
-  const systemData = await fetchSystemData(systemName);
-  console.log(systemData);
 
-  const planetData = systemData[1];
+/**
+ * Creates PlanetarySystem object from raw star and planet data.
+ *
+ * @param {Array.<Object>} starData - An array of objects holding star data.
+ * @param {Array.<Object>} planetData - An array of objects holding planet data.
+ * @returns {PlanetarySystem} - A PlanetarySystem object constructed from given
+ *   star and planet data.
+ */
+const createSystem = (starData, planetData) => {
+  let [starData, planetData] = systemData;
+  let stars = [];
   let planets = [];
+
+  for (const star of starData) {
+    stars.push(new Star(star));
+  }
+
   for (const planet of planetData) {
     planets.push(new Planet(planet));
   }
 
-  console.log(planets)
+  return PlanetarySystem.constructSystem(stars, planets);
+};
+
+const main = async () => {
+  let systemName = "55 Cnc";
+  systemName = "Kepler-47";
+  //systemName = "Kepler-97";
+
+  const [starData, planetData] = await fetchSystemData(systemName);
+
+  const planetarySystem = createSystem(starData, planetData);
+
+  console.log(systemData)
+  console.log(planetarySystem);
 };
 
 main();
