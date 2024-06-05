@@ -1,5 +1,5 @@
 export class Star {
-  constructor(data, planets) {
+  constructor(data) {
     this.systemName = data["sy_name"];
     this.hostName = data["hostname"];
     this.stellarRadius = data["st_rad"];
@@ -8,6 +8,5 @@ export class Star {
     this.ra = data["ra"];
     this.dec = data["dec"];
     this.systemDistance = data["sy_dist"];
-    this.planets = planets;
   }
 }
