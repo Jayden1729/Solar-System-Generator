@@ -19,11 +19,11 @@ export class Planet {
 
   /**
    * Fixes the mass and radius if either value is missing, and adds strings to
-   * this.assumptions describing the assumptions made about this planet. 
-   * 
-   * If both are missing, the radius is set to between 0.005 - 0.035 jupiter 
+   * this.assumptions describing the assumptions made about this planet.
+   *
+   * If both are missing, the radius is set to between 0.005 - 0.035 jupiter
    * masses, as this is the most common range for exoplanet masses.
-   * 
+   *
    * If only the mass or radius are missing, the required value is calculated
    * from the mass-radius relation for exoplanets.
    */
@@ -32,11 +32,8 @@ export class Planet {
       // If no recorded mass, sets mass to between 0.005 - 0.035 jupiter masses,
       // as this is the most common range for exoplanet masses.
       this.mass = Math.random() * 3 + 0.005;
-      this.assumptions.push(`No recorded mass, mass set to: ${this.mass} based
-       on most common mass distribution of exoplanets.`);
       this.radius = Math.pow(this.mass, 0.55);
-      this.assumptions.push(`No recorded radius, radius set to: ${this.radius} 
-      based on mass-radius relationship.`);
+      this.assumptions.push("Missing mass and radius");
     } else if (this.radius == null) {
       if (this.mass < 120 / 308) {
         // M-R relation for mass < ~120 earth masses.
@@ -45,14 +42,12 @@ export class Planet {
         // M-R relation for mass > ~120 earth masses.
         this.radius = Math.pow(this.mass, 0.03);
       }
-      this.assumptions.push(`No recorded radius, radius set to: ${this.radius} 
-      based on mass-radius relationship.`);
+      this.assumptions.push("Missing radius");
     } else if (this.mass == null) {
-      // M-R relation for mass < ~120 earth masses, as this is the most common 
+      // M-R relation for mass < ~120 earth masses, as this is the most common
       // range of mass for exoplanets
       this.mass = Math.pow(this.radius, 1 / 0.55);
-      this.assumptions.push(`No recorded mass, mass set to: ${this.mass} 
-      based on mass-radius relationship.`);
+      this.assumptions.push("Missing mass");
     }
   }
 }
