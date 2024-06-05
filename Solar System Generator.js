@@ -2,12 +2,12 @@
  * Fetches data from the NASA Exoplanet Database.
  *
  * @async
- * @param {string} dataCols A string of database columns to query, separated by
- *   commas.
- * @param {string} dataTable The name of the data table to query.
- * @param {string} condition Return data only for entries where this condition
+ * @param {string} dataCols - A string of database columns to query, separated 
+ *   by commas.
+ * @param {string} dataTable - The name of the data table to query.
+ * @param {string} condition - Return data only for entries where this condition
  *   is fulfilled.
- * @returns {json} Returns the specified database columns from the specified
+ * @returns {json} - Returns the specified database columns from the specified
  *   data table for entries that fulfil the specified condition, or returns an
  *   error.
  *
@@ -141,14 +141,14 @@ const getMode = (array) => {
 };
 
 /**
- * Takes data aquired from NASA Exoplanet Database and simplifies it, so that 
+ * Takes data aquired from NASA Exoplanet Database and simplifies it, so that
  *   each object only has one entry.
  *
- * @param {Array.<Object>} astroData - An array of astronomical objects aquired 
+ * @param {Array.<Object>} astroData - An array of astronomical objects aquired
  *   from the NASA Exoplanet Database.
  * @returns {Array.<Object>} - An array of astronomical objects, reduced so that
- *   each object only has one entry. The median value from all entries is taken 
- *   for numerical attribute values, and the mode is taken for string attribute 
+ *   each object only has one entry. The median value from all entries is taken
+ *   for numerical attribute values, and the mode is taken for string attribute
  *   values.
  */
 const simplifyAstroData = (astroData, identifier) => {
@@ -222,15 +222,16 @@ const fetchSystemData = async (systemName) => {
     }
   }
 
-  return [starData, planetData]
+  return [starData, planetData];
 };
 
 const main = async () => {
   let systemName = "55 Cnc";
   systemName = "Kepler-47";
+  systemName = "Kepler-97";
 
   const systemData = await fetchSystemData(systemName);
   console.log(systemData);
-}
+};
 
 main();
