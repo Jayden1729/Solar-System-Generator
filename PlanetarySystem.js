@@ -1,6 +1,6 @@
 class PlanetarySystem {
-    constructor(stars, planets) {
-        this.stars = stars;
-        this.planets = planets;
-    }
+  constructor(stars, planets, systems = null) {
+    this.stars = stars;
+    this.planets = planets;
+  }
 }
