@@ -38,8 +38,8 @@ export class PlanetarySystem {
    * stars and planets attributes of the final PlanetarySystem, respectively.
    *
    * @static
-   * @param {*} stars - List of stars within the system.
-   * @param {*} planets - List of planets within the system.
+   * @param {Array.<Star>} stars - List of stars within the system.
+   * @param {Array.<Planet>} planets - List of planets within the system.
    * @returns {PlanetarySystem} - A planetary system object.
    */
   static constructSystem(stars, planets) {
