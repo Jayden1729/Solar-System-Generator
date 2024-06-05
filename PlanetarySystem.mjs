@@ -43,7 +43,7 @@ export class PlanetarySystem {
    * to calculate the missing value.
    */
   fixPeriodAndAxis() {
-    const G = 6.67 * pow(10, -11);
+    const G = 6.67 * Math.pow(10, -11);
     for (const planet of this.planets) {
       if (planet.orbitalPeriod === 0 && planet.semiMajorAxis === 0) {
         // If no recorded semi-major axis or orbital period, a semi-major axis
