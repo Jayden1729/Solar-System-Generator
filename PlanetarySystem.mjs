@@ -1,3 +1,6 @@
+import { Star } from "./Star.mjs";
+import { Planet } from "./Planet.mjs";
+
 export class PlanetarySystem {
   constructor(stars, planets, subSystems = null) {
     this.stars = stars;

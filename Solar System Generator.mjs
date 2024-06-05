@@ -1,4 +1,6 @@
 import { Planet } from "./Planet.mjs";
+import { Star } from "./Star.mjs";
+import { PlanetarySystem } from "./PlanetarySystem.mjs";
 
 /**
  * Fetches data from the NASA Exoplanet Database.
