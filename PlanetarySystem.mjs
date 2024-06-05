@@ -6,7 +6,7 @@ export class PlanetarySystem {
     this.stars = stars;
     this.planets = planets;
     this.subSystems = subSystems;
-    this.totalStarMass = getStarMass();
+    this.totalStarMass = this.getStarMass();
   }
 
   /**
@@ -21,8 +21,10 @@ export class PlanetarySystem {
       totalStarMass += star.stellarMass;
     }
 
-    for (const subSystem of this.subSystems) {
-      totalStarMass += subSystem.totalStarMass;
+    if (this.subSystems) {
+      for (const subSystem of this.subSystems) {
+        totalStarMass += subSystem.totalStarMass;
+      }
     }
 
     return totalStarMass;
@@ -49,7 +51,7 @@ export class PlanetarySystem {
       let starPlanets = [];
 
       for (const planet of planets) {
-        if (planet.hostName === star.hostName && !planet.orbitBinary) {
+        if (planet.hostName === star.hostName && planet.orbitBinary === 0) {
           starPlanets.push(planet);
         } else if (planet.orbitBinary) {
           binaryPlanets.push(planet);
@@ -57,12 +59,16 @@ export class PlanetarySystem {
       }
 
       if (starPlanets.length) {
-        subSystems.push(new PlanetarySystem(star, starPlanets));
+        subSystems.push(new PlanetarySystem([star], starPlanets));
       } else {
         loneStars.push(star);
       }
     }
 
-    return new PlanetarySystem(loneStars, binaryPlanets, subSystems);
+    if (binaryPlanets.length || loneStars.length || subSystems.length > 0) {
+      return new PlanetarySystem(loneStars, binaryPlanets, subSystems);
+    } else {
+      return subSystems[0];
+    }
   }
 }
