@@ -240,7 +240,6 @@ const fetchSystemData = async (systemName) => {
  *   star and planet data.
  */
 const createSystem = (starData, planetData) => {
-  let [starData, planetData] = systemData;
   let stars = [];
   let planets = [];
 
@@ -264,7 +263,7 @@ const main = async () => {
 
   const planetarySystem = createSystem(starData, planetData);
 
-  console.log(systemData)
+  //console.log(systemData)
   console.log(planetarySystem);
 };
 
