@@ -1,7 +1,7 @@
-class Planet {
+export class Planet {
   constructor(data) {
     this.name = data["pl_name"];
-    this.hostname = data["hostname"];
+    this.hostName = data["hostname"];
     this.orbitalPeriod = data["pl_orbper"];
     this.semiMajorAxis = data["pl_orbsmax"];
     this.radius = data["pl_radj"];
