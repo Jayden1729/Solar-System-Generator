@@ -1,7 +1,7 @@
 import { Planet } from "./Planet.mjs";
 import { Star } from "./Star.mjs";
 import { PlanetarySystem } from "./PlanetarySystem.mjs";
-
+import { queryDatabase } from "./database.mjs";
 /**
  * Fetches data from the NASA Exoplanet Database.
  *
@@ -196,7 +196,7 @@ const fetchSystemData = async (systemName) => {
   const starDataCols = "sy_name,hostname,st_rad,st_mass,st_dens,ra,dec,sy_dist";
 
   //Fetch data for stars in system
-  const rawStarData = await fetchNASAData(
+  const rawStarData = await queryDatabase(
     starDataCols,
     "stellarhosts",
     `sy_name='${systemName}'`
@@ -213,7 +213,7 @@ const fetchSystemData = async (systemName) => {
   //Get planet data for all stars in system
   let planetData = [];
   for (const star of starData) {
-    const rawPlanetData = await fetchNASAData(
+    const rawPlanetData = await queryDatabase(
       planetDataCols,
       "pscomppars",
       `hostname='${star["hostname"]}'`
@@ -228,8 +228,6 @@ const fetchSystemData = async (systemName) => {
 
   return [starData, planetData];
 };
-
-
 
 /**
  * Creates PlanetarySystem object from raw star and planet data.
@@ -263,8 +261,7 @@ const main = async () => {
 
   const planetarySystem = createSystem(starData, planetData);
 
-  //console.log(systemData)
-  console.log(planetarySystem);
+  console.log(planetarySystem)
 };
 
 main();
