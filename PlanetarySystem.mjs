@@ -102,7 +102,7 @@ export class PlanetarySystem {
       for (const planet of planets) {
         if (planet.hostName === star.hostName && planet.orbitBinary === 0) {
           starPlanets.push(planet);
-        } else if (planet.orbitBinary) {
+        } else if (planet.hostName === star.hostName && planet.orbitBinary) {
           binaryPlanets.push(planet);
         }
       }
