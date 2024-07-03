@@ -1,7 +1,6 @@
 import { Planet } from "./Planet.mjs";
 import { Star } from "./Star.mjs";
 import { PlanetarySystem } from "./PlanetarySystem.mjs";
-import { queryDatabase } from "./database.mjs";
 /**
  * Fetches data from the NASA Exoplanet Database.
  *
@@ -43,6 +42,33 @@ const fetchNASAData = async (dataCols, dataTable, condition) => {
     .catch((error) => {
       console.log(error);
       return error;
+    });
+
+  return jsonData;
+};
+
+const fetchLocalData = async (dataTable, systemName) => {
+  const apiURL = "http://localhost:3000/api/v1";
+
+  const jsonData = await fetch(
+    `${apiURL}/${dataTable}/${systemName}`
+  )
+    .then(
+      (response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error("Request failed!");
+      },
+      (networkError) => {
+        console.log(networkError.message);
+      }
+    )
+    .then((jsonResponse) => {
+      return jsonResponse;
+    })
+    .catch((error) => {
+      console.log(error);
     });
 
   return jsonData;
@@ -196,11 +222,7 @@ const fetchSystemData = async (systemName) => {
   const starDataCols = "sy_name,hostname,st_rad,st_mass,st_dens,ra,dec,sy_dist";
 
   //Fetch data for stars in system
-  const rawStarData = await queryDatabase(
-    starDataCols,
-    "stellarhosts",
-    `sy_name='${systemName}'`
-  );
+  const rawStarData = await fetchLocalData("stellarhosts", systemName);
 
   //Simplify star data
   let starData;
@@ -213,11 +235,7 @@ const fetchSystemData = async (systemName) => {
   //Get planet data for all stars in system
   let planetData = [];
   for (const star of starData) {
-    const rawPlanetData = await queryDatabase(
-      planetDataCols,
-      "pscomppars",
-      `hostname='${star["hostname"]}'`
-    );
+    const rawPlanetData = await fetchLocalData("pscomppars", star["hostname"]);
     try {
       const reducedPlanetData = simplifyAstroData(rawPlanetData, "pl_name");
       planetData = planetData.concat(reducedPlanetData);
@@ -261,7 +279,7 @@ const main = async () => {
 
   const planetarySystem = createSystem(starData, planetData);
 
-  console.log(planetarySystem)
+  console.log(planetarySystem);
 };
 
 main();
