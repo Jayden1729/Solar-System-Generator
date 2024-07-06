@@ -1,5 +1,6 @@
 import { Star } from "./Star.mjs";
 import { Planet } from "./Planet.mjs";
+import * as THREE from "./node_modules/three/src/Three.js";
 
 export class PlanetarySystem {
   constructor(stars, planets, subSystems = null) {
@@ -8,6 +9,7 @@ export class PlanetarySystem {
     this.subSystems = subSystems;
     this.totalStarMass = this.getStarMass();
     this.fixPeriodAndAxis();
+    this.getPlanetOrbits();
   }
 
   /**
@@ -30,6 +32,7 @@ export class PlanetarySystem {
 
     return totalStarMass;
   }
+
   /**
    * Fixes the period and semi-major axis for planets if either value is
    * missing, and adds strings to planet.assumptions detailing which values
@@ -76,6 +79,61 @@ export class PlanetarySystem {
         }
         planet.assumptions.push("Missing orbital period");
       }
+    }
+  }
+
+  
+  /**
+   * Generates ellipses in the shape of each planet's orbit. Initially tries
+   * using semi-major and semi-minor axes. If there are none recorded, a
+   * circular orbit is assumed, with radius calculated from Kepler's Law.
+   * Failing that, a random radius is used.
+   */
+  getPlanetOrbits() {
+    const G = 6.67 * Math.pow(10, -11);
+    for (const planet of this.planets) {
+      const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+      let curve;
+
+      if (planet.semiMajorAxis != null && planet.orbitalEccentricity != null) {
+        // prettier-ignore
+        curve = new THREE.EllipseCurve(
+          0, 0,
+          planet.semiMajorAxis, planet.semiMinorAxis,
+          0, 2 * Math.PI,
+          false,
+          0
+        );
+      } else if (planet.orbitalPeriod != null) {
+        // prettier-ignore
+        const orbitalRadius = 48.25 * Math.pow(
+          (Math.pow(planet.orbitalPeriod, 2) * G * this.totalStarMass),
+          1 / 3);
+        // prettier-ignore
+        curve = new THREE.EllipseCurve(
+          0, 0,
+          orbitalRadius, orbitalRadius,
+          0, 2 * Math.PI,
+          false,
+          0
+        );
+        planet.assumptions.push("Assumed circular orbit");
+      } else {
+        // prettier-ignore
+        curve = new THREE.EllipseCurve(
+          0, 0,
+          this.totalStarMass, this.totalStarMass,
+          0, 2 * Math.PI,
+          false,
+          0
+        );
+        planet.assumptions.push("Assumed circular orbit with random radius");
+      }
+
+      const points = curve.getPoints(50);
+      const geometry = new THREE.BufferGeometry().setFromPoints(points);
+      const ellipse = new THREE.Line(geometry, material);
+      planet.orbitEllipse = ellipse;
     }
   }
 
