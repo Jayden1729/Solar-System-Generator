@@ -13,6 +13,8 @@ export class Planet {
     this.dec = data["dec"];
     this.orbitBinary = data["cb_flag"];
     this.numMoons = data["sy_mnum"];
+    this.semiMinorAxis =
+      this.semiMajorAxis * Math.sqrt(1 - Math.pow(this.orbitalEccentricity, 2));
     this.assumptions = [];
     this.fixMassRadius();
   }
